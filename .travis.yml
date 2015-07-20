@@ -1,4 +1,11 @@
 language: java
 
+# http://docs.travis-ci.com/user/database-setup/
+# You can connect using the username “root” and a blank password.
+before_script:
+  - mysql -e 'create database test;'
+
 jdk:
   - oraclejdk7
+
+script: bundle exec mvn deploy
