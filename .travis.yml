@@ -3,9 +3,22 @@ language: java
 # http://docs.travis-ci.com/user/database-setup/
 # You can connect using the username “root” and a blank password.
 before_script:
-  - mysql -e 'create database test;'
+  - mysql -e 'create schema IF NOT EXISTS test;'
+  - mysql -e 'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE ON `test`.* TO 'skye_dba'@'%' WITH GRANT OPTION ;'
+  - mysql -e 'CREATE USER 'test_admin' IDENTIFIED BY 'test_admin';'
+  - mysql -e 'CREATE USER 'test_user' IDENTIFIED BY 'test_user';'
 
 jdk:
   - oraclejdk7
+  - oraclejdk8
 
-script: bundle exec mvn deploy
+# /opt/puppet/bin/gem install travis
+# travis login --pro       # login to your repo
+# travis encrypt -r cedricwalter/Test "CI_DEPLOY_USERNAME=username"   # replace username
+# travis encrypt -r cedricwalter/Test "CI_DEPLOY_PASSWORD=password"   # replace password
+env:
+  global:
+    secure: "g6afFdWi9pMYrMVR9Q/4+z3dhNwSqdWCYy7ytQNx7ZMXzaOmPmuQxReTyLWWvJ6qs8uXYw1L8tRsEG3XhsccPkynMUO4lIM20wf+f6PCmgHH5HazUAQ1RoBW7rzyPR7iC87yvQUsgxcF6PVHV6FzQTzPsSkBMMjAHutXTsA+a5AsyC9CjOSgWereKHA8Q9kFjaVyIK302ux3P66J+Pe64+yJsj53FIJxMO2MPt4+mb9y/3iZjZWXvNw7wkR8x6nvJKoCMFlAcUlhs4yk0BanY0pbVr4Fexzexho2Wdse82jcuajcKPuANsF8YctkXcBcp/rSSWWP8mo9Tc9Fzg32lCKwS9+xlbMZHvyjwGrZIoCX2mNN5Gx4wA5WNGkCnlndqDco4hoAaJCIZn5n2IE0WKYRLperJkhMGaved6K7wq1ZgtwFdrrTGGp+MhgI2dVMDj5yb712kzFI9aDVgVe20odWYGxWv/u95dbhrtokcZWThvHxYxo4xgfkiOSnSZw/0wZfka14IBiCdFt84hc2zEr4PdLp0+GcgdYxEDU/nxFCPzWn0+LvCjNzu7Sm0xT2fV6hhLmD5WzkkPPeXvfP1yM/6Ywm3O2mqTzZpfH/Yuzl4BqFuCOVgMljYPGhNd69k081+a9RBqYSCVGv+FQafOpLb6rZiW0acspXTT7uyFk="
+    secure: "O8MIy9K6uCjH9/UK+Jr4WbIo93vX923oFt3nEJwC84xj4C7jUTok90jz6GpAMtcsNqjaGY/PMppvRUY1LGbGsMehuHxfe8b+gWqE/8t9jqD5QOMPo85RrP5MS/pqYsKS+7uhQyroK0vsr5TMTRaBmLBhluS9zqVQ0SQr6HoR9ZTUISPErw2Cw1i9FIyI2FaH7uXDkVG+tKx8jLEluZmRYivU3Tvn5SmkWU9MvwlbzMCar55f36mqCcq4/K5o1jGPTAmmEDjgShaMFvf8XPI9WNCunLD1YTNyL7L6ZX+bTiG5E+4pOt6RFUoDkoiZunQ2BVhmgfnExCvSohaLLJFxTeSmrzDv2CQnYZGpWSs7gW3CFBilpHGxTAsGgygbJe0k5bvJvuoeooar9K0o2yg9ZCxhEqSR/vS2MMJyImA0Pq1R4dnpCz9giW2OIKCPycen19FAw5+GIXVmPbJ+q9IgKmKc/qzMQAJMbGacNovAcrhjEthAUkcHFj1gfUYO+Fb34/S7356e3GM0J0pFYYhIu1o4felZRmhQD+kTpMW7cg8nsjqmvgkfjo70RpA02Fjv1Jo7sp4vPt48Lcy7wP0aOCRnCl7aItEpMEi906GF6lXdqco1YCd7wKrJ8HmGV/beRfDQzLQ9UhBBHRNbyRqk7VUh+poy7hI+fF+hrAKOUhA="
+
+script: mvn deploy --settings settings.xml -Dliquibase.target.db.drop=true
