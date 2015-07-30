@@ -4,7 +4,7 @@ language: java
 # You can connect using the username “root” and a blank password.
 before_script:
   - mysql -e 'create schema IF NOT EXISTS test;'
-  - mysql -e 'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE ON `test`.* TO 'skye_dba'@'%' WITH GRANT OPTION ;'
+  - mysql -e 'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE ON `test`.* TO 'skye_dba'@'%' WITH GRANT OPTION;'
   - mysql -e 'CREATE USER 'test_admin' IDENTIFIED BY 'test_admin';'
   - mysql -e 'CREATE USER 'test_user' IDENTIFIED BY 'test_user';'
 
